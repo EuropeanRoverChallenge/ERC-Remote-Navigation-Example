@@ -12,7 +12,7 @@ RUN apt-get update \
   && rosdep update \
   && rosdep install --from-paths src -iy \
   && rm -rf /var/lib/apt/lists/*
-RUN catkin config --extend /opt/ros/melodic && catkin build
+RUN catkin config --extend /opt/ros/melodic && catkin build --no-status
 
 # Install start script
 COPY ./start.sh /
