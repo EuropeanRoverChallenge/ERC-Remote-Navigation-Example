@@ -1,0 +1,7 @@
+<launch>
+
+  <node name="image_saver" 
+        pkg="erc_bringup"
+        type="image_saver"/>
+
+</launch>
