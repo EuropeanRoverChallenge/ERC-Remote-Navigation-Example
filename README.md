@@ -5,11 +5,14 @@ To spare the teams the hassle of cross building the software for the target plat
 
 ## Features
 The Dockerfile extends the image from [ERC-Remote-Image-Base](https://github.com/EuropeanRoverChallenge/ERC-Remote-Image-Base) repository and:
- - Installs additional packages - by default only the `tmux` package is added as an example but you can list any other packages you would like to install. 
- - Creates a catkin workspace, copies the ROS packages from the `src` directory, installs dependencies using `rosdep` and builds the workspace.
- - Adds a line to the system-wide `bashrc` file that will automatically source the workspace on a new bash session.
- - Copies the `start.sh` script and sets it as a default command for the image.
+ - installs additional packages - by default only the `tmux` package is added as an example but you can list any other packages you would like to install,
+ - creates a catkin workspace, copies the ROS packages from the `src` directory, installs dependencies using `rosdep` and builds the workspace,
+ - adds a line to the system-wide `bashrc` file that will automatically source the workspace on a new bash session,
+ - copies the `start.sh` script and sets it as a default command for the image.
 
+The `erc_bringup` package is added as an example and contains:
+ - `image_saver` node - a script that let's you save an image from a camera to a PNG file by publishing a message, containing camera topic name, on the `image_saver/save` topic,
+ - `erc_bringup.launch` file - a launch file that starts the `image_saver` node and is launched by the `start.sh` script when the container starts.
 
 ## Quick start guide
 ### 1. Import the code to a private repository
