@@ -57,3 +57,42 @@ Now, you can run and test your image:
 docker run -it --env-file credentials.env --name erc_img ghcr.io/OWNER/IMAGE_NAME
 ```
 If everything is working correctly, the status of the device on the Freedom Robotics platform should change to `Connected`. You can then try to try to enable SSH tunnel by going into **Settings** -> **Remote SSH** and clicking **Enable Remote SSH**. Paste the ssh command into a terminal and run it, when asked for password, type `root`.
+
+## Testing the image with the simulation
+Running the image with [the simulation](https://github.com/EuropeanRoverChallenge/ERC-Remote-Navigation-Sim) is not only a means of testing your software but also a great way to create simulated scenarios of operation on the field trial.
+
+To make your software able to communicate with the simulation nodes, you need to make sure your container and the simulation can talk on the [network](https://docs.docker.com/network/). The simplest method to do this is to just remove the container's network isolation and use the `host` network.
+
+First, start the simulation. If you are using the simulation natively on the host you should be good to go. If you are starting the simulation through a docker container, add the `--net=host` argument to the `docker run` command.
+
+Now, run your image, also with the `--net=host` option. The full command should look like this:
+```
+docker run -it --net=host --env-file credentials.env --name erc_img ghcr.io/OWNER/IMAGE_NAME
+```
+
+If everything is working correctly, you should be able to visualize data from the simulation on the Freedom Robotics platform.
+
+### Connecting to a simulation running on another computer
+You can actually run this image and the simulation on different computers. This is particularly useful for testing the image on an arm-based single-board computer (like Jetson) to further replicate conditions from the actual competition.
+
+Make sure both computers are connected to the same network and can talk to each other. You will need to start all nodes with the correct `ROS_IP` and `ROS_MASTER_URI` variables. To demonstrate it on an example, let's assume you have the following setup:
+```
+subnet: 10.0.0.0/24
+IP of the simulation computer: 10.0.0.1
+IP of the testing computer: 10.0.0.2
+```
+On the simulation computer, type:
+```
+export ROS_IP=10.0.0.1
+```
+If you are using simulation natively on the host, just run it. If you are running it through a docker container, add `-e ROS_IP` option to the `docker run` command to pass the variable to the container.
+
+On the testing computer, type:
+```
+export ROS_IP=10.0.0.2
+export ROS_MASTER_URI=http://10.0.0.1:11311
+```
+Add `-e ROS_IP -e ROS_MASTER_URI` arguments when running the image. The full command should look like this:
+```
+docker run -it --net=host -e ROS_IP -e ROS_MASTER_URI --env-file credentials.env --name erc_img ghcr.io/OWNER/IMAGE_NAME
+```
